@@ -2,10 +2,7 @@ package com.AerolineaAPI.Aerolinea.controller;
 
 import com.AerolineaAPI.Aerolinea.model.Vuelo;
 import com.AerolineaAPI.Aerolinea.service.VueloService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,5 +27,23 @@ public class VueloController {
     @GetMapping
     public List<Vuelo> obtenerTodos() {
         return vueloService.findAll();
+    }
+
+    @PostMapping
+    public Vuelo crearVuelo( @RequestBody Vuelo vuelo){
+        return vueloService.save(vuelo);
+    }
+
+    @GetMapping("/{id}")// /vuelos/{id} Retorna el vuelo con ese ID
+    public Vuelo devolverVueloPorID(@PathVariable Long id){
+        return vueloService.findById(id);
+    }
+    @PutMapping("/{id}") //vuelos/{id} Actualiza un vuelo existente
+    public Vuelo actualizarVuelo(@PathVariable Long id, @RequestBody Vuelo datos){
+        return vueloService.update(id, datos);
+    }
+    @DeleteMapping("/{id}") //vuelos/{id} Elimina un vuelo por ID
+    public void eliminarVueloPorID(@PathVariable Long id){
+        vueloService.delete(id);
     }
 }

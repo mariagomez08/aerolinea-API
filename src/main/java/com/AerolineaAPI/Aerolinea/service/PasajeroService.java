@@ -31,4 +31,29 @@ public class PasajeroService {
     public Pasajero save(Pasajero pasajero){
         return pasajeroRepository.save(pasajero);
     }
+
+    public Pasajero findById( Long id) {
+        return pasajeroRepository.findById(id).orElse(null);
+    }
+
+    public Pasajero update(Long id, Pasajero datos) {
+        Pasajero existe = pasajeroRepository.findById(id).orElse(null);
+
+        if (existe == null) {
+            return null;
+        }
+
+        // Actualizamos los campos de la entidad Pasajero
+        existe.setNombre(datos.getNombre());
+        existe.setApellido(datos.getApellido());
+        existe.setEmail(datos.getEmail());
+        existe.setDocumento(datos.getDocumento());
+
+        return pasajeroRepository.save(existe);
+    }
+
+    public void delete(Long id) {
+        pasajeroRepository.deleteById(id);
+    }
+
 }

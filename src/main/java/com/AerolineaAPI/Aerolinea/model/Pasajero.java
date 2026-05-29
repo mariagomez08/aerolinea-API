@@ -7,6 +7,8 @@ package com.AerolineaAPI.Aerolinea.model;
 — Constructor vacío + constructor completo + getters y setters*/
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name="pasajeros")
@@ -17,12 +19,17 @@ public class Pasajero {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "El nombre no puede estar vacío")
     private String nombre;
     @Column(nullable = false)
+    @NotBlank(message = "El apellido no puede estar vacío")
     private String apellido;
     @Column(nullable = false)
+    @NotBlank(message = "El documento es obligatorio")
     private String documento;
     @Column(nullable = false)
+    @NotBlank(message = "El email es obligatorio")
+    @Email(message = "El email no tiene un formato válido")
     private String email;
 
     public Pasajero() {

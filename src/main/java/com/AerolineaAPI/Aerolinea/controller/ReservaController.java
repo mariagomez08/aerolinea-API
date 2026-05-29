@@ -5,6 +5,8 @@ import com.AerolineaAPI.Aerolinea.dto.ReservaRequestDTO;
 import com.AerolineaAPI.Aerolinea.dto.ReservaResponseDTO;
 import com.AerolineaAPI.Aerolinea.service.ReservaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,36 +22,39 @@ public class ReservaController {
             this.reservaService = reservaService;
         }
 
-        @GetMapping
-        public List<ReservaResponseDTO> findAll() {
-
-            return reservaService.findAll();
-        }
-
-        @GetMapping("/{id}")
-        public ReservaResponseDTO findById(@PathVariable Long id) {
-
-            return reservaService.findById(id);
-        }
-
-        @PostMapping
-        public ReservaResponseDTO save(@RequestBody ReservaRequestDTO dto) {
-
-            return reservaService.save(dto);
-        }
-
-        @PutMapping("/{id}")
-        public ReservaResponseDTO update(
-                @PathVariable Long id,
-                @RequestBody ReservaRequestDTO dto) {
-
-            return reservaService.update(id, dto);
-        }
-
-        @DeleteMapping("/{id}")
-        public void delete(@PathVariable Long id) {
-
-            reservaService.delete(id);
-        }
+    @GetMapping
+    public ResponseEntity<List<ReservaResponseDTO>> findAll() {
+        return ResponseEntity.ok(reservaService.findAll());
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ReservaResponseDTO> findById(@PathVariable Long id) {
+        ReservaResponseDTO resultado = reservaService.findById(id);
+        if (resultado == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(resultado);
+    }
+
+    @PostMapping
+    public ResponseEntity<ReservaResponseDTO> save(@RequestBody ReservaRequestDTO dto) {
+        ReservaResponseDTO creado = reservaService.save(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(creado);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ReservaResponseDTO> update(@PathVariable Long id, @RequestBody ReservaRequestDTO dto) {
+        ReservaResponseDTO actualizado = reservaService.update(id, dto);
+        if (actualizado == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(actualizado);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        reservaService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+}
 

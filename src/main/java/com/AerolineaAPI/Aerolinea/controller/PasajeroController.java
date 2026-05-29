@@ -1,10 +1,10 @@
 package com.AerolineaAPI.Aerolinea.controller;
 
-import com.AerolineaAPI.Aerolinea.model.Pasajero;
-import com.AerolineaAPI.Aerolinea.model.Vuelo;
+import com.AerolineaAPI.Aerolinea.model.Pasajero; // O tu PasajeroDTO si manejas uno
 import com.AerolineaAPI.Aerolinea.service.PasajeroService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,37 +12,42 @@ import java.util.List;
 @RestController
 @RequestMapping("/pasajeros")
 public class PasajeroController {
-    private final PasajeroService pasajeroService;
 
     @Autowired
-    public PasajeroController(PasajeroService pasajeroService) {
-        this.pasajeroService = pasajeroService;
-    }
+    private PasajeroService pasajeroService;
 
     @GetMapping
-    public List<Pasajero> obtenerTodos() {
-        return pasajeroService.findAll();
+    public ResponseEntity<List<Pasajero>> findAll() {
+        return ResponseEntity.ok(pasajeroService.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Pasajero> findById(@PathVariable Long id) {
+        Pasajero pasajero = pasajeroService.findById(id);
+        if (pasajero == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(pasajero);
     }
 
     @PostMapping
-    public Pasajero crearPasajero(@RequestBody Pasajero pasajero){
-        return pasajeroService.save(pasajero);
+    public ResponseEntity<Pasajero> save(@RequestBody Pasajero pasajero) {
+        Pasajero creado = pasajeroService.save(pasajero);
+        return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
-
-    @GetMapping("/{id}") // /pasajeros/{id}
-    public Pasajero devolverPasajeroPorID(@PathVariable Long id) {
-        return pasajeroService.findById(id);
+    @PutMapping("/{id}")
+    public ResponseEntity<Pasajero> update(@PathVariable Long id, @RequestBody Pasajero pasajero) {
+        Pasajero actualizado = pasajeroService.update(id, pasajero);
+        if (actualizado == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(actualizado);
     }
 
-    @PutMapping("/{id}") // /pasajeros/{id}
-    public Pasajero actualizarPasajero(@PathVariable Long id, @RequestBody Pasajero datos) {
-        return pasajeroService.update(id, datos);
-    }
-
-    @DeleteMapping("/{id}") // /pasajeros/{id}
-    public void eliminarPasajeroPorID(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         pasajeroService.delete(id);
+        return ResponseEntity.noContent().build();
     }
-
 }

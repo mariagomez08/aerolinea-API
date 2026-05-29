@@ -1,49 +1,53 @@
 package com.AerolineaAPI.Aerolinea.controller;
 
-import com.AerolineaAPI.Aerolinea.model.Vuelo;
+import com.AerolineaAPI.Aerolinea.model.Vuelo; // O tu VueloDTO si manejas uno
 import com.AerolineaAPI.Aerolinea.service.VueloService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/*
-* Crear los controllers y verificar
-— VueloController en el paquete controller — @RestController, @RequestMapping("/vuelos")
-— Inyecta VueloService por constructor
-— Método: @GetMapping que devuelve List
-— PasajeroController — misma estructura, ruta /pasajeros
-— Corre la aplicación y verifica en consola que Hibernate crea las tablas
-— Inserta un dato de prueba en pgAdmin e inspecciona la respuesta en Postman
-* */
 @RestController
 @RequestMapping("/vuelos")
 public class VueloController {
 
-    private final VueloService vueloService;
+    @Autowired
+    private VueloService vueloService;
 
-    public VueloController(VueloService vueloService) {
-        this.vueloService = vueloService;
-    }
     @GetMapping
-    public List<Vuelo> obtenerTodos() {
-        return vueloService.findAll();
+    public ResponseEntity<List<Vuelo>> findAll() {
+        return ResponseEntity.ok(vueloService.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Vuelo> findById(@PathVariable Long id) {
+        Vuelo vuelo = vueloService.findById(id);
+        if (vuelo == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(vuelo);
     }
 
     @PostMapping
-    public Vuelo crearVuelo( @RequestBody Vuelo vuelo){
-        return vueloService.save(vuelo);
+    public ResponseEntity<Vuelo> save(@RequestBody Vuelo vuelo) {
+        Vuelo creado = vueloService.save(vuelo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
-    @GetMapping("/{id}")// /vuelos/{id} Retorna el vuelo con ese ID
-    public Vuelo devolverVueloPorID(@PathVariable Long id){
-        return vueloService.findById(id);
+    @PutMapping("/{id}")
+    public ResponseEntity<Vuelo> update(@PathVariable Long id, @RequestBody Vuelo vuelo) {
+        Vuelo actualizado = vueloService.update(id, vuelo);
+        if (actualizado == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(actualizado);
     }
-    @PutMapping("/{id}") //vuelos/{id} Actualiza un vuelo existente
-    public Vuelo actualizarVuelo(@PathVariable Long id, @RequestBody Vuelo datos){
-        return vueloService.update(id, datos);
-    }
-    @DeleteMapping("/{id}") //vuelos/{id} Elimina un vuelo por ID
-    public void eliminarVueloPorID(@PathVariable Long id){
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         vueloService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -4,6 +4,7 @@ package com.AerolineaAPI.Aerolinea.controller;
 import com.AerolineaAPI.Aerolinea.dto.ReservaRequestDTO;
 import com.AerolineaAPI.Aerolinea.dto.ReservaResponseDTO;
 import com.AerolineaAPI.Aerolinea.service.ReservaService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Reservas", description = "Gestión de reservas de la aerolínea")
 @RestController
 @RequestMapping("/reservas")
 public class ReservaController {

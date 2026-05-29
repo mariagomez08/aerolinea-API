@@ -2,6 +2,7 @@ package com.AerolineaAPI.Aerolinea.controller;
 
 import com.AerolineaAPI.Aerolinea.model.Vuelo; // O tu VueloDTO si manejas uno
 import com.AerolineaAPI.Aerolinea.service.VueloService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Vuelos", description = "Gestión de vuelos de la aerolínea")
 @RestController
 @RequestMapping("/vuelos")
 public class VueloController {

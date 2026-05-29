@@ -2,6 +2,7 @@ package com.AerolineaAPI.Aerolinea.controller;
 
 import com.AerolineaAPI.Aerolinea.model.Vuelo; // O tu VueloDTO si manejas uno
 import com.AerolineaAPI.Aerolinea.service.VueloService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,13 +32,13 @@ public class VueloController {
     }
 
     @PostMapping
-    public ResponseEntity<Vuelo> save(@RequestBody Vuelo vuelo) {
+    public ResponseEntity<Vuelo> save(@Valid  @RequestBody Vuelo vuelo) {
         Vuelo creado = vueloService.save(vuelo);
         return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Vuelo> update(@PathVariable Long id, @RequestBody Vuelo vuelo) {
+    public ResponseEntity<Vuelo> update(@PathVariable Long id,@Valid  @RequestBody Vuelo vuelo) {
         Vuelo actualizado = vueloService.update(id, vuelo);
         if (actualizado == null) {
             return ResponseEntity.notFound().build();
